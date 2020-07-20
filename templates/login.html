@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>欢迎登陆</title>
+</head>
+<body>
+    <form action="/search" method="post">
+        {% csrf_token %}
+         <input type="text" name="q">
+        <input type="submit" value="Submit">
+    </form>
+<p>{{ message }}</p>
+</body>
+</html>
