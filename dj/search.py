@@ -2,11 +2,12 @@
 
 # 表单
 from django.shortcuts import render
+from dj.utils.sql import ms_mysql
+
+ms = ms_mysql('localhost', "root", "root", "bpm", 3306)
 
 
-# 接收请求数据
 def search(request):
-    request.encoding = 'utf-8'
     ctx = {}
     if request.method == 'GET':
         if request.GET and request.GET['q']:
@@ -15,7 +16,10 @@ def search(request):
             render(request, "login.html")
     else:
         if request.POST['q']:
+            data = ms.__execute_object__("select * from org_user where fullname_ like '%" + request.POST['q'] + "%'")
             ctx['message'] = request.POST['q']
+            ctx['data'] = data
+            print(data)
         else:
             ctx['message'] = "你提交了空表单"
     return render(request, "login.html", ctx)
