@@ -16,7 +16,7 @@ def search(request):
             render(request, "login.html")
     else:
         if request.POST['q']:
-            data = ms.__execute_object__("select * from org_user where fullname_ like '%" + request.POST['q'] + "%'")
+            data = ms.__execute_list__("select * from org_user where fullname_ like '%" + request.POST['q'] + "%'")
             ctx['message'] = request.POST['q']
             ctx['data'] = data
             print(data)

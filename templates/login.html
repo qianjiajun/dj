@@ -5,12 +5,23 @@
     <title>欢迎登陆</title>
 </head>
 <body>
-    <form action="/search" method="post">
-        {% csrf_token %}
-         <input type="text" name="q">
-        <input type="submit" value="Submit">
-    </form>
-<p>{{ message }}</p>
-<p>{{ data }}</p>
+<form action="/search" method="post">
+    {% csrf_token %}
+    <input type="text" name="q">
+    <input type="submit" value="Submit">
+</form>
+<p>{{ message }}</p><br>
+<table>
+    <tr>
+        <td>账户</td>
+        <td>姓名</td>
+    </tr>
+    {% for row in data %}
+        <tr>
+            <td>{{ row.account_ }}</td>
+            <td>{{ row.fullname_ }}</td>
+        </tr>
+    {% endfor %}
+</table>
 </body>
 </html>
