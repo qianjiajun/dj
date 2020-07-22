@@ -13,48 +13,48 @@ class ms_mysql:
         self.port = port
         self.charset = "utf8"
         self.cursor_class = pymysql.cursors.DictCursor
-        self.connect = None
+        self.conn = None
 
-    def __connect__(self):
-        self.connect = pymysql.connect(host=self.host,
-                                       user=self.user,
-                                       password=self.password,
-                                       database=self.database,
-                                       port=self.port,
-                                       charset=self.charset,
-                                       cursorclass=self.cursor_class)
+    def connect(self):
+        self.conn = pymysql.connect(host=self.host,
+                                    user=self.user,
+                                    password=self.password,
+                                    database=self.database,
+                                    port=self.port,
+                                    charset=self.charset,
+                                    cursorclass=self.cursor_class)
 
-    def __close__(self):
-        self.connect.close()
+    def close(self):
+        self.conn.close()
 
-    def __execute_void__(self, sql_str):
-        self.__connect__()
-        cursor = self.connect.cursor()
+    def execute_void(self, sql_str):
+        self.connect()
+        cursor = self.conn.cursor()
         cursor.execute(sql_str)
-        self.__close__()
+        self.close()
 
-    def __execute_object__(self, sql_str):
-        self.__connect__()
-        cursor = self.connect.cursor()
+    def execute_object(self, sql_str):
+        self.connect()
+        cursor = self.conn.cursor()
         cursor.execute(sql_str)
         data = cursor.fetchone()
-        self.__close__()
+        self.close()
         return data
 
-    def __execute_list__(self, sql_str):
-        self.__connect__()
-        cursor = self.connect.cursor()
+    def execute_list(self, sql_str):
+        self.connect()
+        cursor = self.conn.cursor()
         cursor.execute(sql_str)
         data = cursor.fetchall()
-        self.__close__()
+        self.close()
         return data
 
-    def __execute_page__(self, sql_str, size):
-        self.__connect__()
-        cursor = self.connect.cursor()
+    def execute_page(self, sql_str, size):
+        self.connect()
+        cursor = self.conn.cursor()
         cursor.execute(sql_str)
         data = cursor.fetchall(self, size)
-        self.__close__()
+        self.close()
         return data
 
 
@@ -65,49 +65,49 @@ class ms_oracle:
         self.password = password
         self.url = url
         self.cursor_class = pymysql.cursors.DictCursor
-        self.connect = None
+        self.conn = None
 
-    def __connect__(self):
-        self.connect = cx_Oracle.connect(self.username, self.password, self.url)
+    def connect(self):
+        self.conn = cx_Oracle.connect(self.username, self.password, self.url)
 
-    def __commit__(self):
-        self.connect.commit()
+    def commit(self):
+        self.conn.commit()
 
-    def __close__(self):
-        self.connect.close()
+    def close(self):
+        self.conn.close()
 
-    def __execute_void__(self, sql_str):
-        self.__connect__()
-        cursor = self.connect.cursor()
+    def execute_void(self, sql_str):
+        self.connect()
+        cursor = self.conn.cursor()
         cursor.execute(sql_str)
         cursor.close()
-        self.__commit__()
-        self.__close__()
+        self.commit()
+        self.close()
 
-    def __execute_object__(self, sql_str):
-        self.__connect__()
-        cursor = self.connect.cursor()
+    def execute_object(self, sql_str):
+        self.connect()
+        cursor = self.conn.cursor()
         cursor.execute(sql_str)
         data = cursor.fetchone()
         cursor.close()
-        self.__commit__()
-        self.__close__()
+        self.commit()
+        self.close()
         return data
 
-    def __execute_list__(self, sql_str):
-        self.__connect__()
-        cursor = self.connect.cursor()
+    def execute_list(self, sql_str):
+        self.connect()
+        cursor = self.conn.cursor()
         cursor.execute(sql_str)
         data = cursor.fetchall()
         cursor.close()
-        self.__close__()
+        self.close()
         return data
 
-    def __execute_page__(self, sql_str, size):
-        self.__connect__()
-        cursor = self.connect.cursor()
+    def execute_page(self, sql_str, size):
+        self.connect()
+        cursor = self.conn.cursor()
         cursor.execute(sql_str)
         data = cursor.fetchall(self, size)
         cursor.close()
-        self.__close__()
+        self.close()
         return data

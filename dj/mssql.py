@@ -17,7 +17,7 @@ def mysql(request):
             render(request, "mysql.html")
     else:
         if request.POST['q']:
-            data = ms.__execute_list__("select * from org_user where fullname_ like '%" + request.POST['q'] + "%'")
+            data = ms.execute_list("select * from org_user where fullname_ like '%" + request.POST['q'] + "%'")
             ctx['message'] = request.POST['q']
             ctx['data'] = data
             print('mysql', data)
@@ -35,7 +35,7 @@ def oracle(request):
             render(request, "oracle.html")
     else:
         if request.POST['q']:
-            data = ms.__execute_list__("select * from org_user where fullname_ like '%" + request.POST['q'] + "%'")
+            data = ms.execute_list("select * from org_user where fullname_ like '%" + request.POST['q'] + "%'")
             ctx2['message'] = request.POST['q']
             ctx2['data'] = data
             print('oracle', data)
