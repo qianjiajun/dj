@@ -16,9 +16,10 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
-from dj import search
+from dj import mssql
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('search', search.search),
+    path('mysql', mssql.mysql),
+    path('oracle', mssql.oracle),
 ]
