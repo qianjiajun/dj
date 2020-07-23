@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>欢迎登陆</title>
+</head>
+<body>
+<form action="/core/login/" method="post">
+    {% csrf_token %}
+    <label for="username">用户名</label><input type="text" name="username"/><br/>
+    <label for="password">密码</label><input type="password" name="password"/><br/>
+    <input type="submit" value="登陆"/>
+</form>
+<p>{{ message }}</p><br>
+{% if data %}
+    {{data.trueName}},欢迎登陆 <a href="/core/logout/">注销</a>
+{% endif %}
+</body>
+</html>

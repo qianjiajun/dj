@@ -1,18 +1,20 @@
 import json
 
 
-class resultSet(object):
+class result(object):
 
-    def __init__(self, code=200, success=True, message='', detail='', data=None):
-        self.res = {
+    def __init__(self, code=200, success=True, message='', detail='', data: object = None, token=None, extra=None):
+        self.res: dict = {
             'code': code,
             'success': success,
             'message': message,
             'detail': detail,
-            'data': data
+            'data': data,
+            'token': token,
+            'extra': extra
         }
 
-    def set_status(self, status, detail, data):
+    def set_status(self, status, detail, data: object = None):
         self.res['code'] = status.code
         self.res['success'] = status.success
         self.res['message'] = status.message
@@ -36,11 +38,24 @@ class resultSet(object):
         self.res['detail'] = detail
         return self
 
-    def set_data(self, data):
+    def set_data(self, data: object = None):
         self.res['data'] = data
         return self
 
-    def success(self, message, detail, data):
+    def set_token(self, token):
+        self.res['token'] = token
+        return self
+
+    def set_extra(self, extra):
+        self.res['extra'] = extra
+        return self
+
+    def get(self, key):
+        if self.res is None:
+            return None
+        return self.res[key]
+
+    def success(self, message='', detail='', data: object = None):
         self.res['code'] = 200
         self.res['success'] = True
         self.res['message'] = message
@@ -48,7 +63,7 @@ class resultSet(object):
         self.res['data'] = data
         return self
 
-    def fail(self, message, detail, data):
+    def fail(self, message='', detail='', data: object = None):
         self.res['code'] = 500
         self.res['success'] = False
         self.res['message'] = message

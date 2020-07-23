@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import cx_Oracle
 import pymysql
 
@@ -58,13 +57,22 @@ class ms_mysql:
         return data
 
 
+def rows_to_dict_list(cursor, rows):
+    columns = [i[0] for i in cursor.description]
+    return [dict(zip(columns, row)) for row in rows]
+
+
+def row_to_dict(cursor, row):
+    columns = [i[0] for i in cursor.description]
+    return dict(zip(columns, row))
+
+
 class ms_oracle:
 
     def __init__(self, username, password, url):
         self.username = username
         self.password = password
         self.url = url
-        self.cursor_class = pymysql.cursors.DictCursor
         self.conn = None
 
     def connect(self):
@@ -88,7 +96,12 @@ class ms_oracle:
         self.connect()
         cursor = self.conn.cursor()
         cursor.execute(sql_str)
-        data = cursor.fetchone()
+        row = cursor.fetchone()
+        if cursor.rowcount == 0:
+            return None
+        if cursor.rowcount >= 2:
+            raise Exception("单行返回值返回多行数据", 1)
+        data = row_to_dict(cursor, row)
         cursor.close()
         self.commit()
         self.close()
@@ -98,7 +111,10 @@ class ms_oracle:
         self.connect()
         cursor = self.conn.cursor()
         cursor.execute(sql_str)
-        data = cursor.fetchall()
+        rows = cursor.fetchall()
+        if cursor.rowcount == 0:
+            return None
+        data = rows_to_dict_list(cursor, rows)
         cursor.close()
         self.close()
         return data

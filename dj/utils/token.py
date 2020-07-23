@@ -1,60 +1,76 @@
+import base64
+import hmac
+import json
 from datetime import datetime
 
-import pytz
-from django.core.cache import cache
-from rest_framework import HTTP_HEADER_ENCODING, exceptions
-from rest_framework.authentication import BaseAuthentication
-from rest_framework.authtoken.models import Token
+claims_key = 'qjj_love_yry'
 
 
-def get_authorization_header(request):
-    auth = request.META.get('HTTP_AUTHORIZATION', b'')
-    if isinstance(auth, type('')):
-        auth = auth.encode(HTTP_HEADER_ENCODING)
-    return auth
+class token:
 
+    def __init__(self, string, secret, expire=60, claims: dict = None):
+        if claims is None:
+            claims = {}
+        self.string = string
+        self.secret = secret
+        self.expire = expire
+        self.token = None
+        self.claims = claims
+        self.key = None
 
-class ExpiringTokenAuthentication(BaseAuthentication):
-    model = Token
+    def add_claim(self, key, value):
+        self.claims[key] = value
+        return self
 
-    def authenticate(self, request):
-        auth = get_authorization_header(request)
+    # def generate_token(self):
+    #     end_str = str(datetime.datetime() + self.expire)
+    #     ts_byte = end_str.encode("utf-8")
+    #     sha1_str = hmac.new(self.key.encode("utf-8"), ts_byte, 'sha1').hexdigest()
+    #     access_token = end_str + ':' + sha1_str
+    #     self.token = base64.urlsafe_b64encode(access_token.encode("utf-8"))
+    #     return self.token
 
-        if not auth:
+    def generate_token(self):
+        self.key = hmac.new(self.secret.encode("utf-8"), self.string.encode("utf-8"), 'sha1').hexdigest()
+        self.claims['timestamp'] = datetime.datetime()
+        claims_str = json.dumps(self.claims)
+        print(claims_str)
+        ts_byte = claims_str.encode("utf-8")
+        sha1_str = hmac.new(self.key.encode("utf-8"), ts_byte, 'sha1').hexdigest()
+        access_token = claims_str + ':' + sha1_str
+        self.token = base64.urlsafe_b64encode(access_token.encode("utf-8"))
+        return self
+
+    # def certify_token(self, access_token):
+    #     token_str = base64.urlsafe_b64decode(access_token).decode('utf-8')
+    #     token_list = token_str.split(':')
+    #     if len(token_list) != 2:
+    #         return False
+    #     end_str = token_list[0]
+    #     if float(end_str) < datetime.datetime():
+    #         return False
+    #     known_str = token_list[1]
+    #     sha1 = hmac.new(self.key.encode("utf-8"), end_str.encode('utf-8'), 'sha1')
+    #     calc_str = sha1.hexdigest()
+    #     if calc_str != known_str:
+    #         return False
+    #     else:
+    #         return True
+
+    def certify_token(self, access_token):
+        token_str = base64.urlsafe_b64decode(access_token).decode('utf-8')
+        token_list = token_str.split(':')
+        if len(token_list) != 2:
             return None
-        try:
-            token = auth.decode()
-        except UnicodeError:
-            msg = 'Invalid token header. Token string should not contain invalid characters.'
-            raise exceptions.AuthenticationFailed(msg)
-        return self.authenticate_credentials(token)
-
-    def authenticate_credentials(self, key):
-        # 增加了缓存机制
-        # 首先先从缓存中查找
-        token_cache = 'token_' + key
-        cache_user = cache.get(token_cache)
-        if cache_user:
-            return cache_user.user, cache_user  # 首先查看token是否在缓存中，若存在，直接返回用户
-        try:
-            token = self.model.objects.get(key=key[6:])
-
-        except self.model.DoesNotExist:
-            raise exceptions.AuthenticationFailed('认证失败')
-
-        if not token.user.is_active:
-            raise exceptions.AuthenticationFailed('用户被禁止')
-
-        utc_now = datetime.datetime.utcnow()
-
-        if (utc_now.replace(tzinfo=pytz.timezone("UTC")) - token.created.replace(
-                tzinfo=pytz.timezone("UTC"))).days > 14:  # 设定存活时间 14天
-            raise exceptions.AuthenticationFailed('认证信息过期')
-
-        if token:
-            token_cache = 'token_' + key
-            cache.set(token_cache, token, 24 * 7 * 60 * 60)  # 添加 token_xxx 到缓存
-        return token.user, token
-
-    def authenticate_header(self, request):
-        return 'Token'
+        claims_str = token_list[0]
+        print(claims_str)
+        if claims_str is not None:
+            self.claims = json.loads(claims_str)
+        print(self.claims)
+        known_str = token_list[1]
+        sha1 = hmac.new(self.key.encode("utf-8"), claims_str.encode('utf-8'), 'sha1')
+        calc_str = sha1.hexdigest()
+        if calc_str != known_str:
+            return None
+        else:
+            return self
