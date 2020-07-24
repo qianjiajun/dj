@@ -74,3 +74,15 @@ class token:
             return None
         else:
             return self
+
+    @staticmethod
+    def get_claims(access_token):
+        token_str = base64.urlsafe_b64decode(access_token.encode("utf-8")).decode('utf-8')
+        token_list = token_str.split(':')
+        if len(token_list) != 2:
+            return None
+        claims_str = token_list[0]
+        if claims_str is None:
+            return None
+        else:
+            return json.loads(claims_str)

@@ -1,6 +1,9 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.utils.deprecation import MiddlewareMixin
 
+from dj.utils.sql import ms_oracle
+from dj.utils.token import token
+
 
 class TestMiddleware(MiddlewareMixin):
     """中间件类"""
@@ -31,15 +34,33 @@ class RequiredMiddleware(MiddlewareMixin):
 
     # 中间件函数。(用到哪个函数写哪个，不需要全写)
     def process_request(self, request):
-        """产生request对象之后，url匹配之前调用"""
-        if request.path == '/login/' or request.path == '/index/':
+        """产生request对象之后，url匹配之前调用
+        :rtype: object
+        """
+        if request.path == '/login/' or request.path == '/logout/':
             pass
         else:
             access_token = request.META.get('HTTP_TOKEN')
-            # if access_token is None:
-            #     return HttpResponseRedirect('/login/')
-            print(self, '----process_request----')
+            if access_token is None:
+                raise Exception('token为空')
+            else:
+                # ms_oracle().execute_object('select from ')
+                claims = token.get_claims(access_token)
+                if claims is None:
+                    pass
+                # timestamp = claims['timestamp']
+                # print('timestamp', timestamp)
+                print(self, '----process_request----')
             # return HttpResponse('process_request') # 默认放行,不拦截请求。
+
+    def __call__(self, request):
+        response = None
+        if hasattr(self, 'process_request'):
+            response = self.process_request(request)
+        response = response or self.get_response(request)
+        if hasattr(self, 'process_response'):
+            response = self.process_response(request, response)
+        return response
 
 
 # 定义中间件类，处理全局异常
