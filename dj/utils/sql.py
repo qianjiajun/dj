@@ -112,12 +112,13 @@ class ms_oracle:
         cursor = self.conn.cursor()
         cursor.execute(sql_str)
         rows = cursor.fetchall()
-        if cursor.rowcount == 0:
+        count = cursor.rowcount
+        if count == 0:
             return None
         data = rows_to_dict_list(cursor, rows)
         cursor.close()
         self.close()
-        return data
+        return data, count
 
     def execute_page(self, sql_str, size):
         self.connect()

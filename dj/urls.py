@@ -16,11 +16,17 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from dj import mssql
+from dj import mssql, views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('mysql/', mssql.mysql),
     path('oracle/', mssql.oracle),
-    path('core/', include('core.urls'))
+    path('jump/', views.jump),
+    path('', include('core.urls'))
 ]
+
+
+handler404 = views.page_not_found
+handler500 = views.server_error
+handler400 = views.bad_request

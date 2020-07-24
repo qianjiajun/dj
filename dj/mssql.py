@@ -14,7 +14,7 @@ def mysql(request):
         if request.GET and request.GET['q']:
             ctx['message'] = request.GET['q']
         else:
-            render(request, "mysql.html")
+            render(request, "sql/mysql.html")
     else:
         if request.POST['q']:
             sql = ["select ", "id_ \"id\"", ",account_ \"username\"", ",fullname_ \"trueName\" ",
@@ -25,7 +25,7 @@ def mysql(request):
             print('mysql', data)
         else:
             ctx['message'] = "你提交了空表单"
-    return render(request, "mysql.html", ctx)
+    return render(request, "sql/mysql.html", ctx)
 
 
 def oracle(request):
@@ -34,7 +34,7 @@ def oracle(request):
         if request.GET and request.GET['q']:
             ctx2['message'] = request.GET['q']
         else:
-            render(request, "oracle.html")
+            render(request, "sql/oracle.html")
     else:
         if request.POST['q']:
             sql = ["select ", "id_ \"id\"", ",account_ \"username\"", ",fullname_ \"trueName\" ",
@@ -45,4 +45,4 @@ def oracle(request):
             print('oracle', data)
         else:
             ctx2['message'] = "你提交了空表单"
-    return render(request, "oracle.html", ctx2)
+    return render(request, "sql/oracle.html", ctx2)

@@ -15,8 +15,11 @@ Including another URLconf
 """
 from django.urls import path
 from core import views
+from core.view import user
 
 urlpatterns = [
     path('login/', views.login),
     path('logout/', views.logout),
+    path('index/', views.index),
+    path('user/', user.index),
 ]

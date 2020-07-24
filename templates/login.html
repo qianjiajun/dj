@@ -1,19 +1,49 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>欢迎登陆</title>
+    <script type="text/javascript" src="{% static '/js/jquery-3.3.1.min.js' %}"></script>
 </head>
 <body>
-<form action="/core/login/" method="post">
+<form id="form" action="" method="post">
     {% csrf_token %}
-    <label for="username">用户名</label><input type="text" name="username"/><br/>
-    <label for="password">密码</label><input type="password" name="password"/><br/>
-    <input type="submit" value="登陆"/>
+    <label for="username">用户名</label><input type="text" name="username" value="root"/><br/>
+    <label for="password">密码</label><input type="password" name="password" value="123456"/><br/>
+    <input type="button" value="登陆" onclick="login()"/>
 </form>
-<p>{{ message }}</p><br>
-{% if data %}
-    {{data.trueName}},欢迎登陆 <a href="/core/logout/">注销</a>
-{% endif %}
+{#<p>{{ message }}</p><br>#}
+{#{% if data %}#}
+{#    {{data.trueName}},欢迎登陆 <a href="/core/logout/">注销</a>#}
+{#{% endif %}#}
 </body>
+<script type="text/javascript">
+    function login() {
+        let form = $('#form');
+        let formArray = form.serializeArray();
+        let formData = {};
+        formArray.forEach(item => {
+            formData[item.name] = item.value
+        })
+        $.ajax('/login/', {
+            type: 'POST',
+            data: formData,
+            success: function (e) {
+                if (e.success){
+                    localStorage.setItem('token', e.token);
+                    localStorage.setItem('user', JSON.stringify(e.data));
+                    localStorage.setItem('userId', e.data.id);
+                    window.location.href = '/index/'
+                } else {
+                    alert(e.message);
+                    console.log(e.detail);
+                }
+            }
+        })
+    }
+
+    {#const token = {{ token }}#}
+    {#console.log('token', token)#}
+</script>
 </html>

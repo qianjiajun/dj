@@ -1,7 +1,7 @@
 import base64
 import hmac
 import json
-from datetime import datetime
+import time
 
 claims_key = 'qjj_love_yry'
 
@@ -23,7 +23,7 @@ class token:
         return self
 
     # def generate_token(self):
-    #     end_str = str(datetime.datetime() + self.expire)
+    #     end_str = str(time.time() + self.expire)
     #     ts_byte = end_str.encode("utf-8")
     #     sha1_str = hmac.new(self.key.encode("utf-8"), ts_byte, 'sha1').hexdigest()
     #     access_token = end_str + ':' + sha1_str
@@ -32,13 +32,13 @@ class token:
 
     def generate_token(self):
         self.key = hmac.new(self.secret.encode("utf-8"), self.string.encode("utf-8"), 'sha1').hexdigest()
-        self.claims['timestamp'] = datetime.datetime()
+        self.claims['timestamp'] = time.time()
         claims_str = json.dumps(self.claims)
         print(claims_str)
         ts_byte = claims_str.encode("utf-8")
         sha1_str = hmac.new(self.key.encode("utf-8"), ts_byte, 'sha1').hexdigest()
         access_token = claims_str + ':' + sha1_str
-        self.token = base64.urlsafe_b64encode(access_token.encode("utf-8"))
+        self.token = base64.urlsafe_b64encode(access_token.encode("utf-8")).decode("utf-8")
         return self
 
     # def certify_token(self, access_token):
@@ -47,7 +47,7 @@ class token:
     #     if len(token_list) != 2:
     #         return False
     #     end_str = token_list[0]
-    #     if float(end_str) < datetime.datetime():
+    #     if float(end_str) < time.time():
     #         return False
     #     known_str = token_list[1]
     #     sha1 = hmac.new(self.key.encode("utf-8"), end_str.encode('utf-8'), 'sha1')
@@ -58,7 +58,7 @@ class token:
     #         return True
 
     def certify_token(self, access_token):
-        token_str = base64.urlsafe_b64decode(access_token).decode('utf-8')
+        token_str = base64.urlsafe_b64decode(access_token.encode("utf-8")).decode('utf-8')
         token_list = token_str.split(':')
         if len(token_list) != 2:
             return None

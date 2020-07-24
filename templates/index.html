@@ -1,0 +1,25 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}主页{% endblock %}</title>
+    <script type="text/javascript" src="{% static '/js/jquery-3.3.1.min.js' %}"></script>
+</head>
+<body>
+<span id="trueName"></span>,欢迎登陆 <br/>
+<a href="/logout/">注销</a>
+<hr/>
+<span>菜单</span><br/>
+<a href="/user/">用户管理</a>
+{% block main %}
+{% endblock %}
+</body>
+<script type="text/javascript">
+    const token = localStorage.getItem('token')
+    const user = JSON.parse(localStorage.getItem('user'))
+    $('#trueName').text(user['trueName'])
+</script>
+{% block css %} {% endblock %}
+{% block js %} {% endblock %}
+</html>

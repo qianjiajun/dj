@@ -1,0 +1,70 @@
+{% extends 'index.html' %}
+
+{% block title %}用户管理{% endblock %}
+
+{% block main %}
+    <form id="form" action="/user/" method="post">
+        {% csrf_token %}
+        <input type="text" name="key"/>
+        <input type="button" value="搜索" onclick="search()"/>
+        <input type="reset" value="重置"/>
+    </form><br/>
+    总共<span id="total" style="display: inline-block;width: 40px;"></span>条
+    <table border="1">
+        <tr>
+            <td width="50">id</td>
+            <td width="100">账户</td>
+            <td width="100">姓名</td>
+        </tr>
+        <tbody id="data">
+
+        </tbody>
+    </table>
+{% endblock %}
+
+{% block css %}
+    <style type="text/css">
+
+    </style>
+{% endblock %}
+
+{% block js %}
+    <script type="text/javascript">
+        console.log('token2', token);
+
+        function search() {
+            let form = $('#form');
+            let formArray = form.serializeArray();
+            let formData = {};
+            formArray.forEach(item => {
+                formData[item.name] = item.value
+            })
+            $.ajax('/user/', {
+                type: 'POST',
+                headers: {
+                    'token': token
+                },
+                data: formData,
+                success: function (e) {
+                    if (e.success) {
+                        let tbody = $('#data');
+                        $('#total').text(e['extra']);
+                        if (e.data) {
+                            let trs = [];
+                            e.data.forEach(user => {
+                                trs.push('<tr><td>', user['id'], '</td><td>', user['username'], '</td><td>', user['trueName'], '</td></tr>');
+                            })
+                            tbody.html(trs.join(''));
+                        } else {
+                            tbody.html('<tr><td>返回数据为空</td></tr>')
+                        }
+                    } else {
+                        alert(e.message);
+                        console.log(e.detail);
+                    }
+                }
+            })
+        }
+
+    </script>
+{% endblock %}
