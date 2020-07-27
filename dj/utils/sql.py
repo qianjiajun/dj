@@ -2,6 +2,14 @@ import cx_Oracle
 import pymysql
 
 
+def ms():
+    return MsMysql('localhost', "root", "root", "bpm", 3306)
+
+
+def ora():
+    return MsOracle("bpm", "bpm", "10.10.10.28:1521/WXCZ")
+
+
 class MsMysql:
 
     def __init__(self, host, user, password, database, port):
@@ -91,6 +99,21 @@ class MsOracle:
         cursor.close()
         self.commit()
         self.close()
+
+    def execute_value(self, sql_str):
+        self.connect()
+        cursor = self.conn.cursor()
+        cursor.execute(sql_str)
+        row = cursor.fetchone()
+        if cursor.rowcount == 0:
+            return None
+        if cursor.rowcount >= 2:
+            raise Exception("单行返回值返回多行数据", 1)
+        data = row[0]
+        cursor.close()
+        self.commit()
+        self.close()
+        return data
 
     def execute_object(self, sql_str):
         self.connect()
