@@ -16,12 +16,12 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 
-from dj import mssql, views
+from dj import views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('mysql/', mssql.mysql),
-    path('oracle/', mssql.oracle),
+    path('mysql/', views.mysql),
+    path('oracle/', views.oracle),
     path('jump/', views.jump),
     path('', include('core.urls'))
 ]

@@ -1,7 +1,7 @@
 import redis
 
 
-class redis_cache:
+class RedisCache:
 
     def __init__(self, password=None, host='127.0.0.1', port=6379, db=0, decode_responses=True, charset='utf8'):
         self.password = password

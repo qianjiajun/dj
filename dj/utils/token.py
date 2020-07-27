@@ -6,7 +6,7 @@ import time
 claims_key = 'qjj_love_yry'
 
 
-class token:
+class Token:
 
     def __init__(self, string, secret, expire=60, claims: dict = None):
         if claims is None:

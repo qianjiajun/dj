@@ -1,8 +1,8 @@
 from django.http import HttpResponse, HttpResponseRedirect
 from django.utils.deprecation import MiddlewareMixin
 
-from dj.utils.sql import ms_oracle
-from dj.utils.token import token
+from dj.utils.sql import MsOracle
+from dj.utils.token import Token
 
 
 class TestMiddleware(MiddlewareMixin):
@@ -45,7 +45,7 @@ class RequiredMiddleware(MiddlewareMixin):
                 raise Exception('token为空')
             else:
                 # ms_oracle().execute_object('select from ')
-                claims = token.get_claims(access_token)
+                claims = Token.get_claims(access_token)
                 if claims is None:
                     pass
                 # timestamp = claims['timestamp']

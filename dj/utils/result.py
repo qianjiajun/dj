@@ -1,7 +1,7 @@
 import json
 
 
-class result(object):
+class Result(object):
 
     def __init__(self, code=200, success=True, message='', detail='', data: object = None, token=None, extra=None):
         self.res: dict = {

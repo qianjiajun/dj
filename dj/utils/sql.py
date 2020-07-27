@@ -2,7 +2,7 @@ import cx_Oracle
 import pymysql
 
 
-class ms_mysql:
+class MsMysql:
 
     def __init__(self, host, user, password, database, port):
         self.host = host
@@ -67,7 +67,7 @@ def row_to_dict(cursor, row):
     return dict(zip(columns, row))
 
 
-class ms_oracle:
+class MsOracle:
 
     def __init__(self, username, password, url):
         self.username = username
