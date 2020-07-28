@@ -52,7 +52,8 @@ MIDDLEWARE = [
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'dj.middleware.middleware.RequiredMiddleware',
-    'dj.middleware.middleware.ExceptionTestMiddleware',
+    'dj.middleware.middleware.ExceptionMiddleware',
+
 ]
 
 ROOT_URLCONF = 'dj.urls'
