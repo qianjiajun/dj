@@ -6,8 +6,8 @@ from dj.utils.cache import RedisCache
 from dj.utils.sql import MsOracle
 from dj.utils.token import Token
 
-rc = RedisCache('123456')
-ora = MsOracle("auth", "auth", "115.239.175.246:3013/wxcz")
+rc = RedisCache.redis()
+ora = MsOracle.ora()
 
 
 @require_http_methods(['POST'])
@@ -32,6 +32,6 @@ def login(request):
 
 @require_http_methods(['POST'])
 def logout(request):
-    rc.delete(request.GET['HTTP_TOKEN'])
+    rc.delete(request.META['HTTP_TOKEN'])
     rs = Result().set_message('注销成功')
     return JsonResponse(rs.res)

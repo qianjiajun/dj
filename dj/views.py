@@ -1,6 +1,9 @@
 from django.shortcuts import render
 
-from dj.utils.sql import ms, ora
+from dj.utils.sql import MsMysql, MsOracle
+
+ms = MsMysql.ms()
+ora = MsOracle.ora()
 
 
 def mysql(request):
@@ -14,7 +17,7 @@ def mysql(request):
         if request.POST['q']:
             sql = ["select ", "id_ \"id\"", ",account_ \"username\"", ",fullname_ \"trueName\" ",
                    "from org_user ", "where fullname_ like '%{trueName}%'".format(trueName=request.POST['q'])]
-            data = ms().execute_list("".join(sql))
+            data = ms.execute_list("".join(sql))
             ctx['message'] = request.POST['q']
             ctx['data'] = data
             print('mysql', data)
@@ -34,7 +37,7 @@ def oracle(request):
         if request.POST['q']:
             sql = ["select ", "id_ \"id\"", ",account_ \"username\"", ",fullname_ \"trueName\" ",
                    "from org_user ", "where fullname_ like '%{trueName}%'".format(trueName=request.POST['q'])]
-            data = ora().execute_list("".join(sql))
+            data = ora.execute_list("".join(sql))
             ctx2['message'] = request.POST['q']
             ctx2['data'] = data
             print('oracle', data)

@@ -17,6 +17,10 @@ class RedisCache:
                                          decode_responses=self.decode_responses,
                                          encoding=self.charset)
 
+    @staticmethod
+    def redis():
+        return RedisCache(host='10.10.10.21', port=6379, db=11, password=123456)
+
     def set_ex(self, key, value, seconds):
         _redis = redis.Redis(connection_pool=self.pool)
         _redis.set(key, value, ex=seconds)

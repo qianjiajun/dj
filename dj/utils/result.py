@@ -53,7 +53,9 @@ class Result(object):
     def get(self, key):
         if self.res is None:
             return None
-        return self.res[key]
+        if key in self.res.keys():
+            return self.res[key]
+        return None
 
     def success(self, message='', detail='', data: object = None):
         self.res['code'] = 200
@@ -71,5 +73,5 @@ class Result(object):
         self.res['data'] = data
         return self
 
-    def to_string(self):
-        return json.dumps(self.res)
+    def to_string(self, ensure_ascii: bool = False):
+        return json.dumps(self.res, ensure_ascii=ensure_ascii)

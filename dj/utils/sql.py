@@ -2,14 +2,6 @@ import cx_Oracle
 import pymysql
 
 
-def ms():
-    return MsMysql('localhost', "root", "root", "bpm", 3306)
-
-
-def ora():
-    return MsOracle("bpm", "bpm", "10.10.10.28:1521/WXCZ")
-
-
 class MsMysql:
 
     def __init__(self, host, user, password, database, port):
@@ -21,6 +13,10 @@ class MsMysql:
         self.charset = "utf8"
         self.cursor_class = pymysql.cursors.DictCursor
         self.conn = None
+
+    @staticmethod
+    def ms():
+        return MsMysql('localhost', "root", "root", "bpm", 3306)
 
     def connect(self):
         self.conn = pymysql.connect(host=self.host,
@@ -83,6 +79,10 @@ class MsOracle:
         self.url = url
         self.conn = None
 
+    @staticmethod
+    def ora():
+        return MsOracle("auth", "auth", "115.239.175.246:3013/wxcz")
+
     def connect(self):
         self.conn = cx_Oracle.connect(self.username, self.password, self.url)
 
@@ -137,7 +137,7 @@ class MsOracle:
         rows = cursor.fetchall()
         count = cursor.rowcount
         if count == 0:
-            return None
+            return None, None
         data = rows_to_dict_list(cursor, rows)
         cursor.close()
         self.close()
