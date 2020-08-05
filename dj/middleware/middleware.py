@@ -35,7 +35,7 @@ class RequiredMiddleware(MiddlewareMixin):
                     return JsonResponse(Result().fail("验证失败", "非法令牌", None).res)
                 password = auth.execute_value(
                     "SELECT password FROM auth.sys_password WHERE user_id='{id}'".format(id=claims['credit']))
-                is_valid = Token(str(claims['credit']), password).certify_token(access_token)
+                is_valid = Token(claims['credit'], password).certify_token(access_token)
                 if is_valid:
                     if request.path in uncheck_list:
                         return
