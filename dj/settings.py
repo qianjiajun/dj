@@ -154,3 +154,32 @@ STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'static')
 ]
+
+REDIS_CONN = {
+    'host': '10.10.10.21',
+    'port': 6379,
+    'db': 11,
+    'password': 123456
+}
+
+DATABASE_CONN = {
+    'auth': {
+        'dbType': 'oracle',
+        'username': "auth",
+        'password': 'auth',
+        'url': '115.239.175.246:3013/wxcz'
+    },
+    'mysql': {
+        'dbType': 'mysql',
+        'host': 'localhost',
+        'user': 'root',
+        'password': 'root',
+        'database': 'bpm',
+        'port': '3306'
+    }
+}
+
+CUSTOM_SETTINGS = {
+    'WHITE_LIST': ['/login/', ],
+    'BLACK_LIST': ['/black/', ],
+}

@@ -16,7 +16,7 @@ class MsMysql:
 
     @staticmethod
     def ms():
-        return MsMysql('localhost', "root", "root", "bpm", 3306)
+        return MsMysql(host='localhost', user="root", password="root", database="bpm", port=3306)
 
     def connect(self):
         self.conn = pymysql.connect(host=self.host,
@@ -81,7 +81,7 @@ class MsOracle:
 
     @staticmethod
     def ora():
-        return MsOracle("auth", "auth", "115.239.175.246:3013/wxcz")
+        return MsOracle(username="auth", password="auth", url="115.239.175.246:3013/wxcz")
 
     def connect(self):
         self.conn = cx_Oracle.connect(self.username, self.password, self.url)

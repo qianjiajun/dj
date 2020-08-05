@@ -1,25 +1,24 @@
 from django.http import JsonResponse
 from django.utils.deprecation import MiddlewareMixin
 
+from dj.utils.conn import ConnUtil
 from dj.utils.exception import MyException
 from dj.utils.result import Result
-from dj.utils.sql import MsOracle
 from dj.utils.token import Token
 
-ora = MsOracle.ora()
+auth = ConnUtil.get_db("auth")
+white_list = ConnUtil.get_settings("WHITE_LIST")
+black_list = ConnUtil.get_settings("BLACK_LIST")
 
 
 class RequiredMiddleware(MiddlewareMixin):
-
-    white_list = ['/login/', ]
-    black_list = ['/black/', ]
 
     def process_request(self, request):
         print(self, request.path)
         """产生request对象之后，url匹配之前调用
         :rtype: object
         """
-        if request.path in self.white_list:
+        if request.path in white_list:
             pass
         else:
             access_token = request.META.get('HTTP_TOKEN')
@@ -29,7 +28,7 @@ class RequiredMiddleware(MiddlewareMixin):
                 claims = Token.get_claims(access_token)
                 if claims is None:
                     return JsonResponse(Result().fail("验证失败", "非法令牌", None).res)
-                password = ora.execute_value(
+                password = auth.execute_value(
                     "SELECT password FROM auth.sys_password WHERE user_id='{id}'".format(id=claims['credit']))
                 is_valid = Token(str(claims['credit']), password).certify_token(access_token)
                 if is_valid:
