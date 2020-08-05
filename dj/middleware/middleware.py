@@ -22,11 +22,11 @@ class RequiredMiddleware(MiddlewareMixin):
         :rtype: object
         """
         if request.path in white_list:
-            pass
+            return
         if request.path in black_list:
             return JsonResponse(Result().fail("验证失败", "非法接口, 已移入黑名单", None).res)
         else:
-            access_token = request.META.get('HTTP_TOKEN')
+            access_token = request.META['HTTP_TOKEN']
             if access_token is None:
                 return JsonResponse(Result().fail("验证失败", "令牌为空", None).res)
             else:
@@ -38,17 +38,17 @@ class RequiredMiddleware(MiddlewareMixin):
                 is_valid = Token(str(claims['credit']), password).certify_token(access_token)
                 if is_valid:
                     if request.path in uncheck_list:
-                        pass
+                        return
+                    check_token = rc.get(claims['credit'])
+                    if check_token is None:
+                        return JsonResponse(Result().fail("验证失败", "令牌过期", None).is_login(False).res)
+                    elif check_token == access_token:
+                        rc.set_ex(access_token, claims['timestamp'], redis_set['expired'])
+                        rc.set_ex(claims['credit'], access_token, redis_set['expired'])
+                        return
                     else:
-                        check_token = rc.get(str(claims['credit']))
-                        if check_token is None:
-                            return JsonResponse(Result().fail("验证失败", "令牌过期", None).is_login(False).res)
-                        elif check_token == access_token:
-                            rc.set_ex(access_token, claims['timestamp'], redis_set['expired'])
-                            rc.set_ex(str(claims['credit']), access_token, redis_set['expired'])
-                            pass
-                        else:
-                            return JsonResponse(Result().fail("验证失败", "令牌失效，已更新", None).is_login(False).res)
+                        rc.delete(access_token)
+                        return JsonResponse(Result().fail("验证失败", "令牌失效，已更新", None).is_login(False).res)
                 else:
                     return JsonResponse(Result().fail("验证失败", "令牌验证失败", None).res)
             # return HttpResponse(Result().fail("验证失败", "令牌验证失败", None).to_string(),

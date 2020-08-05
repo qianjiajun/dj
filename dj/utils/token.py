@@ -11,8 +11,8 @@ class Token:
     def __init__(self, credit, secret, expire=60, claims: dict = None):
         if claims is None:
             claims = {}
-        claims['credit'] = credit
-        self.credit = credit
+        claims['credit'] = str(credit)
+        self.credit = str(credit)
         self.secret = secret
         self.expire = expire
         self.token = None

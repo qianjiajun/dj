@@ -23,21 +23,21 @@ class RedisCache:
 
     def set_ex(self, key, value, seconds):
         _redis = redis.Redis(connection_pool=self.pool)
-        _redis.set(key, value, ex=seconds)
+        _redis.set(str(key), str(value), ex=seconds)
         _redis.close()
 
     def set(self, key, value):
         _redis = redis.Redis(connection_pool=self.pool)
-        _redis.set(key, value)
+        _redis.set(str(key), str(value))
         _redis.close()
 
     def get(self, key):
         _redis = redis.Redis(connection_pool=self.pool)
-        data = _redis.get(key)
+        data = _redis.get(str(key))
         _redis.close()
         return data
 
     def delete(self, key):
         _redis = redis.Redis(connection_pool=self.pool)
-        _redis.delete(key)
+        _redis.delete(str(key))
         _redis.close()
