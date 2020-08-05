@@ -5,6 +5,7 @@ class Result(object):
 
     def __init__(self, code=200, success=True, message='', detail='', data: object = None, token=None, extra=None):
         self.res: dict = {
+            'is_login': False,
             'code': code,
             'success': success,
             'message': message,
@@ -36,6 +37,10 @@ class Result(object):
 
     def set_detail(self, detail):
         self.res['detail'] = detail
+        return self
+
+    def is_login(self, is_login: bool = False):
+        self.res['is_login'] = is_login
         return self
 
     def set_data(self, data: object = None):

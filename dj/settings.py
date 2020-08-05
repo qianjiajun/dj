@@ -180,6 +180,10 @@ DATABASE_CONN = {
 }
 
 CUSTOM_SETTINGS = {
-    'WHITE_LIST': ['/login/', ],
-    'BLACK_LIST': ['/black/', ],
+    'WHITE_LIST': ['/login/', ],      # 白名单
+    'UNCHECK_LIST': ['/logout/', ],  # 不比较
+    'BLACK_LIST': ['/black/', ],     # 黑名单
+    'REDIS_SET': {
+        'expired': 7200
+    }
 }
